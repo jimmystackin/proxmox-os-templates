@@ -36,7 +36,7 @@ eval $(jq -r '.version_parameters | to_entries | .[] | "export \(.key)=\(.value|
 eval $(jq -r '.template_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$vars_file")
 
 
-if ! command -v guestfish &> /dev/null; then
+if command -v guestfish &> /dev/null; then
   if [ "$install_apt_prereqs" == "1" ]; then
     apt-get install -y libguestfs-tools
   fi
