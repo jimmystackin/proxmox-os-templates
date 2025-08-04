@@ -8,7 +8,7 @@
     "expand_image_by_20": 1
   },
   "version_parameters": {
-    "working_directory": "/automation/",
+    "working_directory": "/automation",
     "ubuntu_release_name": "noble",
     "ubuntu_release_number": 24,
     "ubuntu_archtype": "amd64",
