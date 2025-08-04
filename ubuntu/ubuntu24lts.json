@@ -1,0 +1,27 @@
+{
+  "execution_parameters": {
+    "force_create_new": 1,
+    "set_ci_username": 1,
+    "match_ci_pw_to_root": 1,
+    "install_apt_prereqs": 1,
+    "install_guest_agent": 1,
+    "expand_image_by_20": 1
+  },
+  "version_parameters": {
+    "working_directory": "/automation/",
+    "ubuntu_release_name": "noble",
+    "ubuntu_release_number": 24,
+    "ubuntu_archtype": "amd64",
+    "ubuntu_build": "current",
+    "md5_filename": "MD5SUMS"
+  },
+  "template_parameters": {
+    "vm_id": 1001,
+    "vm_cpu_ct": 2,
+    "vm_mem_mb": 1024,
+    "vm_cpu_type": "x86-64-v2-AES",
+    "vm_net_bridge": "vmbr0",
+    "vm_def_storage": "local-lvm",
+    "vm_username": "ubuntu"
+  }
+}
