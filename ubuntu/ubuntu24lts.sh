@@ -103,7 +103,7 @@ if [ "$CREATE_NEW" == "1" ]; then
       fi
     done < <(qm list | awk 'NR>1 {print $1}')
 
-    if [ "disk_in_use" == "0" ]; then
+    if [ "$disk_in_use" == "0" ]; then
       qm destroy "$vm_id" --purge
       break
     else
