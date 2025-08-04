@@ -37,7 +37,7 @@ eval $(jq -r '.template_parameters | to_entries | .[] | "export \(.key)=\(.value
 
 
 if ! command -v guestfish &> /dev/null; then
-  if [ "$install_apt_prereqs" == 1 ]; then
+  if [ "$install_apt_prereqs" == "1" ]; then
     apt-get install -y libguestfs-tools
   fi
 else
@@ -45,7 +45,7 @@ else
   exit 1
 fi
 
-if [ "$force_create_new" == 1 ];
+if [ "$force_create_new" == "1" ];
   CREATE_NEW=1
 else
   CREATE_NEW=0
