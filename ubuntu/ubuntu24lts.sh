@@ -45,7 +45,7 @@ else
   exit 1
 fi
 
-if [ "$force_create_new" == "1" ];
+if [ "$force_create_new" == "1" ]; then
   CREATE_NEW=1
 else
   CREATE_NEW=0
