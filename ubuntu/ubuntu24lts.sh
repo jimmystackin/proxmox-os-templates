@@ -35,6 +35,10 @@ eval $(jq -r '.execution_parameters | to_entries | .[] | "export \(.key)=\(.valu
 eval $(jq -r '.version_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$vars_file")
 eval $(jq -r '.template_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$vars_file")
 
+# Re Imports specifically vm_id and reads it as an integer so it can do a i++ later
+vm_id=$(jq -r '.template_parameters.vm_id' "$vars_file" | tr -d '"')
+
+
 
 if command -v guestfish &> /dev/null; then
   if [ "$install_apt_prereqs" == "1" ]; then
