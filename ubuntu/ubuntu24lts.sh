@@ -79,9 +79,9 @@ fi
 
 # check if VM template exists
 if [ "$CREATE_NEW" == "1" ]; then
+  curl -L $image_download_src -o $image_local_path
 
   while true; do
-
     if qm status "$vm_id" &>/dev/null; then
       break
     fi
