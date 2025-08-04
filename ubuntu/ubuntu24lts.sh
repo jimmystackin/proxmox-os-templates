@@ -20,11 +20,8 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Get Filename
-self_full_name=$(basename "$0")
+self_full_name=$(basename -- "${BASH_SOURCE[0]}")
 self_name="${self_full_name%.*}"
-
-echo $self_full_name
-echo $self_name
 
 # Determine which JSON to use for VARs
 if [ -f ".$self_name.json" ]; then
