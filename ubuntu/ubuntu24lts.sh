@@ -92,7 +92,7 @@ if [ "$CREATE_NEW" == "1" ]; then
       break
     fi
 
-    basediskname="vm-$vmid-disk-0"
+    basediskname="vm-$vm_id-disk-0"
     disk_in_use=0
 
     while read -r other_vm_id; do
@@ -105,12 +105,12 @@ if [ "$CREATE_NEW" == "1" ]; then
 
     if [ "disk_in_use" == "0" ]; then
       qm destroy "$vm_id" --purge
-      final_vm_id=$vm_id
       break
     else
       (($vm_id++))
     fi
   done
+  final_vm_id=$vm_id
 
   cp $image_local_path /tmp/$image_file_name
 
@@ -125,7 +125,7 @@ if [ "$CREATE_NEW" == "1" ]; then
   qm create "$final_vm_id" --name "$template_name" --cpu "$vm_cpu_type" --cores "$vm_cpu_ct" --memory "$vm_mem_mb" --net0 virtio,bridge="$vm_net_bridge"
   qm importdisk "$final_vm_id" /tmp/$image_file_name "$vm_def_storage"
   qm set "$final_vm_id" --scsihw virtio-scsi-pci --scsi0 "$vm_def_storage":"$final_vm_id"/vm-"$basediskname".raw
-  qm set "$final_vm_id" --ide2 "$vm_id":cloudinit
+  qm set "$final_vm_id" --ide2 "$final_vm_id":cloudinit
   qm set "$final_vm_id" --boot c --bootdisk scsi0
   qm set "$final_vm_id" --serial0 socket --vga serial0
   qm set "$final_vm_id" --ipconfig0 ip=dhcp
