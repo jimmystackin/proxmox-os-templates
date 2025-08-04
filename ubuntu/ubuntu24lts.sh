@@ -31,14 +31,15 @@ else
 fi
 
 # Get Vars
-eval $(jq -r '.execution_parameters | to_entries | .[] | "export \(.key)=\(.value)"' "$json_file")
-eval $(jq -r '.version_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$json_file")
-eval $(jq -r '.template_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$json_file")
+eval $(jq -r '.execution_parameters | to_entries | .[] | "export \(.key)=\(.value)"' "$vars_file")
+eval $(jq -r '.version_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$vars_file")
+eval $(jq -r '.template_parameters | to_entries | .[] | "export \(.key)=\(.value|@sh)"' "$vars_file")
 
 
 if ! command -v guestfish &> /dev/null; then
   if [ "$install_apt_prereqs" == 1 ]; then
     apt-get install -y libguestfs-tools
+  fi
 else
   echo "please install libguestfs-tools or set install_apt_prereqs to 1"
   exit 1
@@ -77,7 +78,7 @@ else
 fi
 
 # check if VM template exists
-if [ "$CREATE_NEW = 1 " ]; then
+if [ "$CREATE_NEW" == "1" ]; then
 
   while true; do
 
@@ -96,7 +97,7 @@ if [ "$CREATE_NEW = 1 " ]; then
       fi
     done < <(qm list | awk 'NR>1 {print $1}')
 
-    if [ "disk_in_use" = 0 ]; then
+    if [ "disk_in_use" == "0" ]; then
       qm destroy "$vm_id" --purge
       break
     else
@@ -106,11 +107,11 @@ if [ "$CREATE_NEW = 1 " ]; then
 
   cp $image_local_path /tmp/$image_file_name
 
-  if [ $expand_image_by_20 == 1 ]; then
+  if [ "$expand_image_by_20" == "1" ]; then
     qemu-img resize /tmp/$image_file_name +20G
   fi
 
-  if [ $install_guest_agent == 1 ]; then
+  if [ "$install_guest_agent" == "1" ]; then
     virt-customize --install qemu-guest-agent -a /tmp/$image_file_name
   fi
 
@@ -122,11 +123,11 @@ if [ "$CREATE_NEW = 1 " ]; then
   qm set "$vm_id" --serial0 socket --vga serial0
   qm set "$vm_id" --ipconfig0 ip=dhcp
 
-  if [ $set_ci_username == 1 ]; then
+  if [ "$set_ci_username" == "1" ]; then
     qm set "$vm_id" --ciuser "$vm_username"
   fi
 
-  if [ $match_ci_pw_to_root == 1 ]; then
+  if [ "$match_ci_pw_to_root" == "1" ]; then
     qm set "$vm_id" --cipassword "$(getent shadow root | cut -d: -f2)"
   fi
 
