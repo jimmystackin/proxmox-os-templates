@@ -85,6 +85,8 @@ fi
 if [ "$CREATE_NEW" == "1" ]; then
   curl -L $image_download_src -o $image_local_path
 
+  final_vm_id=$vm_id
+
   while true; do
     if qm status "$vm_id" &>/dev/null; then
       break
@@ -103,6 +105,7 @@ if [ "$CREATE_NEW" == "1" ]; then
 
     if [ "disk_in_use" == "0" ]; then
       qm destroy "$vm_id" --purge
+      final_vm_id=$vm_id
       break
     else
       (($vm_id++))
@@ -119,23 +122,23 @@ if [ "$CREATE_NEW" == "1" ]; then
     virt-customize --install qemu-guest-agent -a /tmp/$image_file_name
   fi
 
-  qm create "$vm_id" --name "$template_name" --cpu "$vm_cpu_type" --cores "$vm_cpu_ct" --memory "$vm_mem_mb" --net0 virtio,bridge="$vm_net_bridge"
-  qm importdisk "$vm_id" /tmp/$image_file_name "$vm_def_storage"
-  qm set "$vm_id" --scsihw virtio-scsi-pci --scsi0 "$vm_def_storage":"$vm_id"/vm-"$basediskname".raw
-  qm set "$vm_id" --ide2 "$vm_id":cloudinit
-  qm set "$vm_id" --boot c --bootdisk scsi0
-  qm set "$vm_id" --serial0 socket --vga serial0
-  qm set "$vm_id" --ipconfig0 ip=dhcp
+  qm create "$final_vm_id" --name "$template_name" --cpu "$vm_cpu_type" --cores "$vm_cpu_ct" --memory "$vm_mem_mb" --net0 virtio,bridge="$vm_net_bridge"
+  qm importdisk "$final_vm_id" /tmp/$image_file_name "$vm_def_storage"
+  qm set "$final_vm_id" --scsihw virtio-scsi-pci --scsi0 "$vm_def_storage":"$final_vm_id"/vm-"$basediskname".raw
+  qm set "$final_vm_id" --ide2 "$vm_id":cloudinit
+  qm set "$final_vm_id" --boot c --bootdisk scsi0
+  qm set "$final_vm_id" --serial0 socket --vga serial0
+  qm set "$final_vm_id" --ipconfig0 ip=dhcp
 
   if [ "$set_ci_username" == "1" ]; then
-    qm set "$vm_id" --ciuser "$vm_username"
+    qm set "$final_vm_id" --ciuser "$vm_username"
   fi
 
   if [ "$match_ci_pw_to_root" == "1" ]; then
-    qm set "$vm_id" --cipassword "$(getent shadow root | cut -d: -f2)"
+    qm set "$final_vm_id" --cipassword "$(getent shadow root | cut -d: -f2)"
   fi
 
-  qm template "$vm_id"
+  qm template "$final_vm_id"
 
   rm -rf /tmp/$image_file_name
 fi
