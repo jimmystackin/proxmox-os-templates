@@ -23,6 +23,9 @@ fi
 self_full_name=$(basename "$0")
 self_name="${self_full_name%.*}"
 
+echo $self_full_name
+echo $self_name
+
 # Determine which JSON to use for VARs
 if [ -f ".$self_name.json" ]; then
   vars_file=".$self_name.json"
